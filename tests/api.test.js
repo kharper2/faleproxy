@@ -16,7 +16,7 @@ testApp.post('/fetch', async (req, res) => {
     const { url } = req.body;
     
     if (!url) {
-      return res.status(400).json({ error: 'URL parameter is missing' });
+      return res.status(400).json({ error: 'URL is required' });
     }
 
     // For test purposes, we're using the mocked response from nock

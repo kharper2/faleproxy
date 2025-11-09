@@ -22,7 +22,7 @@ app.post('/fetch', async (req, res) => {
     const { url } = req.body;
     
     if (!url) {
-      return res.status(400).json({ error: 'URL parameter is missing' });
+      return res.status(400).json({ error: 'URL is required' });
     }
 
     // Fetch the content from the provided URL
@@ -53,16 +53,26 @@ app.post('/fetch', async (req, res) => {
     }).each(function() {
       // Replace text content but not in URLs or attributes
       const text = $(this).text();
-      const newText = text.replace(/Yale/g, 'Fale').replace(/yale/g, 'fale').replace(/YALE/g, 'FALE');
-      // Intentionally break: don't replace if text hasn't changed
+      // Preserve case: YALE -> FALE, Yale -> Fale, yale -> fale
+      const newText = text.replace(/Yale/gi, (match) => {
+        if (match === 'YALE') return 'FALE';
+        if (match === 'Yale') return 'Fale';
+        if (match === 'yale') return 'fale';
+        return 'Fale';
+      });
       if (text !== newText) {
         $(this).replaceWith(newText);
       }
     });
     
     // Process title separately
-    // Intentionally break: change replacement to fail test
-    const title = $('title').text().replace(/Yale/g, 'Fale').replace(/yale/g, 'fale').replace(/YALE/g, 'YALE');
+    const titleText = $('title').text();
+    const title = titleText.replace(/Yale/gi, (match) => {
+      if (match === 'YALE') return 'FALE';
+      if (match === 'Yale') return 'Fale';
+      if (match === 'yale') return 'fale';
+      return 'Fale';
+    });
     $('title').text(title);
     
     return res.json({ 
