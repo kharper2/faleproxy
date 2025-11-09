@@ -30,11 +30,11 @@ jobs:
     - name: Run tests
       run: npm run test:ci
       
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report
-        path: coverage/
+        - name: Upload coverage report
+          uses: actions/upload-artifact@v4
+          with:
+            name: coverage-report-${{ matrix.node-version }}
+            path: coverage/
         
   deploy-preview:
     needs: test
